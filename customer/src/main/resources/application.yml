@@ -6,3 +6,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  application:
+    name: outdoor_customer
+server:
+  port: 8081
