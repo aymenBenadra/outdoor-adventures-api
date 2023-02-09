@@ -1,0 +1,25 @@
+version: "3.4"
+
+volumes:
+   database:
+      
+services:
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: '${DB_PSSWD}'
+      POSTGRES_DB: '${DB_NAME}'
+      POSTGRES_USER: '${DB_USER}'
+    volumes: 
+      - database:/var/lib/postgresql/data
+    ports: 
+      - ${DB_PORT}:5432
+    networks:
+      outdoor_customer:
+        aliases:
+          - customer
+
+networks:
+  outdoor_customer:
+    driver: bridge 
+
