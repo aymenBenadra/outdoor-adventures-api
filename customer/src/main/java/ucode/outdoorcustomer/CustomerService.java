@@ -6,11 +6,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ucode.outdoorcustomer.util.CustomerException;
 
 /**
  * CustomerService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CustomerService {
 
@@ -19,6 +22,7 @@ public class CustomerService {
   private final CustomerRequestMapper customerRequestMapper;
 
   public Long createCustomer(CustomerRequest customer) {
+    log.info("creating customer with email: " + customer.email());
     return customerRepository.save(customerRequestMapper.apply(customer)).getId();
   }
 
@@ -27,11 +31,14 @@ public class CustomerService {
   }
 
   public CustomerResponse getCustomer(Long customerId) {
-    return customerResponseMapper.apply(customerRepository.findById(customerId).orElseThrow());
+    return customerResponseMapper.apply(customerRepository.findById(customerId)
+        .orElseThrow(() -> new CustomerException("customer with id: " + customerId + " not found")));
   }
 
   public void updateCustomer(Long customerId, CustomerRequest customer) {
-    var c = customerRepository.findById(customerId).orElseThrow();
+    log.info("updating customer with id: " + customerId);
+    var c = customerRepository.findById(customerId)
+        .orElseThrow(() -> new CustomerException("customer with id: " + customerId + " not found"));
     c.setEmail(customer.email());
     c.setUsername(customer.username());
     customerRepository.save(c);
