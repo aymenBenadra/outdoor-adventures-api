@@ -1,0 +1,22 @@
+version: "3.4"
+
+services:
+  redis:
+    image: redis:7.0.8-alpine
+    volumes: 
+      - rdb:/data
+    ports: 
+      - 6379:6379
+    networks:
+      network:
+        aliases:
+          - cart
+
+volumes:
+   rdb:
+      
+networks:
+  network:
+    driver: bridge 
+
+
