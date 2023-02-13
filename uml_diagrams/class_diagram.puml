@@ -1,0 +1,201 @@
+@startuml
+'https://plantuml.com/class-diagram
+'skinparam lineType ortho
+
+class Product {
+    -id: int
+    -name: String
+    -price: double
+    -quantity: int
+    -description: String
+    ==Constructor==
+    +Product()
+    +Product(name: String, price: double, quantity: int, description: String, category: Category)
+    +Product(name: String, price: double, quantity: int, description: String, category: Category, images: List<ProductImage>)
+    ==Getters and Setters==
+    +setName(name: String)
+    +getName(): String
+    +setPrice(price: double)
+    +getPrice(): double
+    +setQuantity(quantity: int)
+    +getQuantity(): int
+    +setDescription(description: String)
+    +getDescription(): String
+    +setCategory(category: Category)
+    +getCategory(): Category
+    ==Methods==
+    +addImage(image: ProductImage)
+    +removeImage(image: ProductImage)
+    +getImages(): List<ProductImage>
+}
+
+class ProductImage {
+    -id: int
+    -url: String
+    ==Constructor==
+    +ProductImage()
+    +ProductImage(url: String)
+    ==Getters and Setters==
+    +setUrl(String url)
+    +getUrl(): String
+}
+
+enum Category {
+    +CLOTHING
+    +ELECTRONICS
+    +FOOD
+    +ACCESSORIES
+    +OTHER
+}
+
+class Cart {
+    -id: int
+    ==Constructor==
+    +Cart()
+    ==Getters and Setters==
+    +getItems(): List<CartItem>
+    ==Methods==
+    +addItem(Product product, int quantity)
+    +removeItem(Product product, int quantity)
+    +getTotalPrice(): double
+}
+
+class CartItem {
+    -id: int
+    -quantity: int
+    ==Constructor==
+    +CartItem()
+    +CartItem(product: Product, quantity: int, cart: Cart)
+    ==Getters and Setters==
+    +setProduct(Product product)
+    +getProduct(): Product
+    +setQuantity(int quantity)
+    +getQuantity(): int
+}
+
+class User {
+    -id: int
+    -username: String
+    -password: String
+    -email: String
+    -name: String
+    ==Constructor==
+    +User()
+    +User(username: String, password: String, email: String, name: String)
+    ==Getters and Setters==
+    +setUsername(String username)
+    +getUsername(): String
+    +setPassword(String password)
+    +getPassword(): String
+    +setEmail(String email)
+    +getEmail(): String
+    +setName(String name)
+    +getName(): String
+    ==Methods==
+    +login(username: String, password: String)
+    +register(username: String, password: String, email: String, name: String)
+    +logout()
+    +findProduct(id: int)
+    +findProducts(page: int)
+    +findProductsByCategory(category: Category, page: int)
+    +searchProducts(keyword: String, page: int)
+}
+
+note right of User
+    A guest can also view products and
+    add products to cart, but cannot
+    place an order until they login.
+end note
+
+class Customer extends User {
+    -address: String
+    -phone: String
+    ==Constructor==
+    +Customer()
+    +Customer(username: String, password: String, email: String, name: String, address: String, phone: String)
+    ==Getters and Setters==
+    +setAddress(String address)
+    +getAddress(): String
+    +setPhone(String phone)
+    +getPhone(): String
+    +setCart(Cart cart)
+    +getCart(): Cart
+    ==Methods==
+    +updateProfile(username: String, password: String, email: String, name: String, address: String, phone: String)
+    +placeOrder()
+    +cancelOrder(id: int)
+    +findOwnOrder(id: int)
+    +findOwnOrders(page: int)
+    +findOwnOrdersByStatus(status: Status, page: int)
+}
+
+class Admin extends User {
+    ==Methods==
+    +addProduct(name: String, price: double, quantity: int, description: String, category: Category)
+    +updateProduct(id: int, name: String, price: double, quantity: int, description: String, category: Category)
+    +deleteProduct(id: int)
+    +findOrder(id: int)
+    +findOrders(page: int)
+    +findOrdersByStatus(status: Status, page: int)
+    +deliverOrder(id: int)
+    +cancelOrder(id: int)
+    +findCustomer(id: int)
+    +findCustomers(page: int)
+    +removeCustomer(id: int)
+}
+
+class Order {
+    -id: int
+    -date: Date
+    -details: List<OrderDetail>
+    -customer: Customer
+    ==Constructor==
+    +Order()
+    +Order(date: Date, details: List<OrderDetail>, status: Status, user: Customer)
+    ==Getters and Setters==
+    +setDate(Date date)
+    +getDate(): Date
+    +setStatus(Status status)
+    +getStatus(): Status
+    +setCustomer(Customer customer)
+    +getCustomer(): Customer
+    ==Methods==
+    +addDetail(OrderDetail detail)
+    +removeDetail(OrderDetail detail)
+    +getDetails(): List<OrderDetail>
+    +getTotalPrice(): double
+}
+
+class OrderDetail {
+    -id: int
+    -product: Product
+    -quantity: int
+    -order: Order
+    ==Constructor==
+    +OrderDetail()
+    +OrderDetail(product: Product, quantity: int, order: Order)
+    ==Getters and Setters==
+    +setProduct(Product product)
+    +getProduct(): Product
+    +setQuantity(int quantity)
+    +getQuantity(): int
+    +setOrder(Order order)
+    +getOrder(): Order
+}
+
+enum Status {
+    +PENDING
+    +DELIVERED
+    +CANCELED
+}
+
+Customer "1" --* "1" Cart: - cart : Cart <
+Cart "1" --* "0,*" CartItem: - items: List<CartItem> < \n cart: Cart >
+Product "1" --* "0,*" ProductImage: -images: List<ProductImage> <
+Product "1" -u- "0,*" CartItem: -product: Product >
+Product "1" -r- "0,*" OrderDetail: -product: Product <
+Product "1" --* "1" Category: -category : Category <
+Customer "1" --* "0,*" Order: -orders: List<Order> <
+Order "1" --* "1,*" OrderDetail: -details: List<OrderDetail> <
+Order "1,*" -r-* "1" Status: -status: Status <
+@enduml
