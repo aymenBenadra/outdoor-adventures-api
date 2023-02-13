@@ -1,0 +1,64 @@
+@startuml
+left to right direction
+skinparam{
+    lineType polyline
+    shadowing true
+    defaultFontName "Helvetica"
+    defaultFontSize 12
+    defaultFontColor #000000
+}
+
+component "OutDoor Adventures Api" as api {
+    portIn "/api" as apiIn
+    component "Api Gateway" <<microservice>> as gateway {
+        portIn "/api" as gatewayIn
+        portOut "/api/products" as productsOut
+        portOut "/api/cart" as cartOut
+        portOut "/api/orders" as ordersOut
+    }
+    component "Products Service" <<microservice>> as products {
+        portIn "/products" as productsIn
+        component "Search Service" <<usecase>> as searchService
+        component "Products Service" <<usecase>> as productsService
+        database "Products Database" <<MongoDB>> as productsDB
+        portOut "spi" as inventorySpi
+    }
+    component "Cart Service" <<microservice>> as cart {
+        portIn "/cart" as cartIn
+        component "Cart Service" <<usecase>> as cartService
+        database "Cart Database" <<Redis>> as cartDB
+    }
+    component "Inventory Service" <<microservice>> as inventory {
+        portIn "/inventory" as inventoryIn
+        component "Inventory Service" <<usecase>> as inventoryService
+        database "Inventory Database" <<Postgresql>> as inventoryDB
+    }
+    component "Orders Service" <<microservice>> as orders {
+        portIn "/orders" as ordersIn
+        component "Orders Service" <<usecase>> as ordersService
+        database "Orders Database" <<Postgresql>> as ordersDB
+    }
+}
+
+apiIn -(0- gatewayIn
+
+cartIn -r- cartService
+cartService -u- cartDB
+
+inventoryIn -r- inventoryService
+inventoryService -u- inventoryDB
+
+ordersIn -- ordersService
+ordersService -- ordersDB
+
+productsIn -- productsService
+searchService -- productsDB
+productsService -- productsDB
+
+productsService -- inventorySpi
+inventorySpi -(0- inventoryIn
+
+productsOut -(0- productsIn
+cartOut -(0- cartIn
+ordersOut -(0- ordersIn
+@enduml
