@@ -1,0 +1,55 @@
+@startuml
+left to right direction
+
+actor Guest as guest
+actor User as user
+actor Admin as admin
+
+rectangle "OutDoor Adventures API" {
+    usecase "Register" as register
+    usecase "Login" as login
+    ' Guest use cases
+    usecase "View Products" as view_products
+    usecase "View Product Details" as view_product_details
+    usecase "Search for Products" as search_products
+    usecase "View Cart" as view_cart
+    usecase "Add Products to Cart" as add_to_cart
+    usecase "Remove Products from Cart" as remove_from_cart
+    ' User use cases
+    usecase "Checkout Cart" as checkout
+    usecase "View Orders" as view_orders
+    usecase "View Order Details" as view_order_details
+    ' Admin use cases
+    usecase "Manage Users" as manage_users
+    usecase "Manage Products" as manage_products
+    usecase "Manage Orders" as manage_orders
+}
+
+user -l-|> guest
+admin -l-|> user
+
+guest -- register
+guest -- view_products
+guest -- view_product_details
+guest -- search_products
+guest -- view_cart
+guest -- add_to_cart
+guest -- remove_from_cart
+guest -- checkout
+
+user -- view_orders
+user -- view_order_details
+
+admin -- manage_users
+admin -- manage_products
+admin -- manage_orders
+
+register <-- login : <<extends>>
+
+view_orders --> login : <<include>>
+view_order_details --> login : <<include>>
+
+manage_users --> login : <<include>>
+manage_products --> login : <<include>>
+manage_orders --> login : <<include>>
+@enduml
