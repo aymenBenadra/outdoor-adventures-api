@@ -1,6 +1,6 @@
 package ucode.outdoorshoppingcart;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +12,6 @@ import lombok.Data;
 @Builder
 public class Cart {
 
-  private Long cid;
-  private List<String> items;
+  private String cid;
+  private Map<String, Integer> items;
 }
