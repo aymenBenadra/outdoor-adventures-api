@@ -4,7 +4,7 @@ package ucode.outdoorshoppingcart.util;
  * CartException
  */
 public class CartNotFoundException extends RuntimeException {
-  public CartNotFoundException(String msg) {
-    super(msg);
+  public CartNotFoundException(long cid) {
+    super("cart with id: " + cid + " not found");
   }
 }
