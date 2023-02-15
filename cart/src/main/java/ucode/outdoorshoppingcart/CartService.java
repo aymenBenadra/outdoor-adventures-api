@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import ucode.outdoorshoppingcart.util.CartNotFoundException;
+import ucode.outdoorshoppingcart.util.KeyUtils;
 
 /**
  * CartService
@@ -26,7 +27,7 @@ public class CartService {
 
   public CartService(RedisTemplate<String, Map<String, Integer>> redisTemplate, CartRepository cartRepository) {
     this.redisTemplate = redisTemplate;
-    this.cartIdCounter = new RedisAtomicLong("globla:cid", redisTemplate.getConnectionFactory());
+    this.cartIdCounter = new RedisAtomicLong(KeyUtils.globalCid(), redisTemplate.getConnectionFactory());
     this.hashOps = redisTemplate.opsForHash();
     this.cartRepository = cartRepository;
   }
@@ -38,17 +39,17 @@ public class CartService {
     return cid;
   }
 
-  public Cart getCartItems(String cid) {
-    return Optional.ofNullable(cartRepository.find(cid))
+  public Cart getCartItems(long cid) {
+    return Optional.ofNullable(cartRepository.find(KeyUtils.cid(cid)))
         .orElseThrow(() -> new CartNotFoundException("cart with id: " + cid + " not found"));
   }
 
-  public void addToCart(String cid, String pid, int quantity) {
-    if (!redisTemplate.hasKey(cid)) {
+  public void addToCart(long cid, long pid, int quantity) {
+    if (!redisTemplate.hasKey(KeyUtils.cid(cid))) {
       log.warn("cart with id " + cid + " not found");
       throw new CartNotFoundException("cart with id: " + cid + " not found");
     }
-    hashOps.put(cid, pid, quantity);
+    hashOps.put(KeyUtils.cid(cid), KeyUtils.pid(pid), quantity);
   }
 
   public List<Cart> getAllCarts() {

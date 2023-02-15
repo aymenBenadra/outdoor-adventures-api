@@ -30,12 +30,12 @@ public class CartResource {
 
   @GetMapping(value = "/{cid}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Cart getCartitems(@PathVariable long cid) {
-    return cartService.getCartItems("cid:" + cid);
+    return cartService.getCartItems(cid);
   }
 
   @PostMapping("/{id}")
   public ResponseEntity<?> addToCart(@PathVariable("id") Long cid, @RequestBody AddToCartRequest addToCartRequest) {
-    cartService.addToCart("cid:" + cid, "pid:" + addToCartRequest.pid(), addToCartRequest.quantity());
+    cartService.addToCart(cid, addToCartRequest.pid(), addToCartRequest.quantity());
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
@@ -45,5 +45,5 @@ public class CartResource {
   }
 }
 
-record AddToCartRequest(String pid, int quantity) {
+record AddToCartRequest(long pid, int quantity) {
 }
