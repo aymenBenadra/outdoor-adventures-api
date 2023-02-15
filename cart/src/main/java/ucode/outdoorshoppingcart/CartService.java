@@ -41,18 +41,24 @@ public class CartService {
 
   public Cart getCartItems(long cid) {
     return Optional.ofNullable(cartRepository.find(KeyUtils.cid(cid)))
-        .orElseThrow(() -> new CartNotFoundException("cart with id: " + cid + " not found"));
+        .orElseThrow(() -> new CartNotFoundException(cid));
   }
 
   public void addToCart(long cid, long pid, int quantity) {
     if (!redisTemplate.hasKey(KeyUtils.cid(cid))) {
       log.warn("cart with id " + cid + " not found");
-      throw new CartNotFoundException("cart with id: " + cid + " not found");
+      throw new CartNotFoundException(cid);
     }
     hashOps.put(KeyUtils.cid(cid), KeyUtils.pid(pid), quantity);
   }
 
   public List<Cart> getAllCarts() {
     return cartRepository.findAll();
+  }
+
+  public void deleteFromCart(long cid, long pid) {
+    Optional.ofNullable(cartRepository.find(KeyUtils.cid(cid)))
+        .orElseThrow(() -> new CartNotFoundException(cid));
+    hashOps.delete(KeyUtils.cid(cid), KeyUtils.pid(pid));
   }
 }

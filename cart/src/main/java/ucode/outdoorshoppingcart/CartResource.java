@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +43,12 @@ public class CartResource {
   @GetMapping("/all")
   public ResponseEntity<List<Cart>> getAllCarts() {
     return ResponseEntity.ok(cartService.getAllCarts());
+  }
+
+  @DeleteMapping("/{cid}/{pid}")
+  public ResponseEntity<Void> deleteFromCart(@PathVariable("cid") long cid, @PathVariable("pid") long pid) {
+    cartService.deleteFromCart(cid, pid);
+    return ResponseEntity.noContent().build();
   }
 }
 
