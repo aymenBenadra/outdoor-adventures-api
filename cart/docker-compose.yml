@@ -7,16 +7,16 @@ services:
       - rdb:/data
     ports: 
       - 6379:6379
-    networks:
-      network:
-        aliases:
-          - cart
+    hostname: outdoor_cart
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8082:8082
+    depends_on: 
+      - redis
 
 volumes:
    rdb:
-      
-networks:
-  network:
-    driver: bridge 
-
-
