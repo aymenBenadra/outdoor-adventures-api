@@ -2,6 +2,7 @@ package ucode.outdoorshoppingcart;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,6 +10,7 @@ import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import ucode.outdoorshoppingcart.util.CartNotFoundException;
 
 /**
  * CartService
@@ -32,18 +34,19 @@ public class CartService {
   public Long createCart() {
     long cid = cartIdCounter.incrementAndGet();
     log.info("new cart id: " + cid);
-    hashOps.put("cid:" + cid, "null", 0);
+    hashOps.put("cid:" + cid, "", 0);
     return cid;
   }
 
   public Cart getCartItems(String cid) {
-    return Cart.builder().cid(cid).items(hashOps.entries(cid)).build();
+    return Optional.ofNullable(cartRepository.find(cid))
+        .orElseThrow(() -> new CartNotFoundException("cart with id: " + cid + " not found"));
   }
 
   public void addToCart(String cid, String pid, int quantity) {
     if (!redisTemplate.hasKey(cid)) {
       log.warn("cart with id " + cid + " not found");
-      return;
+      throw new CartNotFoundException("cart with id: " + cid + " not found");
     }
     hashOps.put(cid, pid, quantity);
   }
