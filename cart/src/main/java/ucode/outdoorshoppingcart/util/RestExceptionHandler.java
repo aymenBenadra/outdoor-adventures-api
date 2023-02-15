@@ -15,6 +15,11 @@ public class RestExceptionHandler {
   public ResponseEntity<ErrorResponse> notFound(final CartNotFoundException ex) {
     return new ResponseEntity<ErrorResponse>(new ErrorResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
   }
+
+  @ExceptionHandler(ProductNotFoundException.class)
+  public ResponseEntity<ErrorResponse> productNotFound(final ProductNotFoundException ex) {
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+  }
 }
 
 record ErrorResponse(String msg) {

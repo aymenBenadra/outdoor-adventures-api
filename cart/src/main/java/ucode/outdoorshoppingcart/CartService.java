@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import ucode.outdoorshoppingcart.util.CartNotFoundException;
 import ucode.outdoorshoppingcart.util.KeyUtils;
+import ucode.outdoorshoppingcart.util.ProductNotFoundException;
 
 /**
  * CartService
@@ -59,6 +60,8 @@ public class CartService {
   public void deleteFromCart(long cid, long pid) {
     Optional.ofNullable(cartRepository.find(KeyUtils.cid(cid)))
         .orElseThrow(() -> new CartNotFoundException(cid));
+    if (!cartRepository.productExists(KeyUtils.cid(cid), KeyUtils.pid(pid)))
+      throw new ProductNotFoundException(cid, pid);
     hashOps.delete(KeyUtils.cid(cid), KeyUtils.pid(pid));
   }
 }

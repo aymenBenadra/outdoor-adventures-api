@@ -41,4 +41,12 @@ public class CartRepository {
     });
     return find(cart.getCid());
   }
+
+  public boolean productExists(String cid, String pid) {
+    if (!redisTemplate.hasKey(cid))
+      return false;
+    if (!hashOps.hasKey(cid, pid))
+      return false;
+    return true;
+  }
 }
