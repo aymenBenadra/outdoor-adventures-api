@@ -2,10 +2,8 @@ server:
   port: 8080
 
 spring:
-
   application:
     name: outdoor_cart
-
   redis:
     host: outdoor_cart 
     port: 6379
