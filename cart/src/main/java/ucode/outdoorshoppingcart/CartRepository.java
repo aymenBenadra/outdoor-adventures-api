@@ -47,6 +47,10 @@ public class CartRepository {
     return find(cart.getCid());
   }
 
+  public boolean cartExists(String cid) {
+    return redisTemplate.hasKey(cid);
+  }
+
   public boolean productExists(String cid, String pid) {
     if (!redisTemplate.hasKey(cid))
       return false;

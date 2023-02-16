@@ -1,5 +1,6 @@
 package ucode.outdoorshoppingcart;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,13 +22,11 @@ import ucode.outdoorshoppingcart.util.ProductNotFoundException;
 @Service
 public class CartService {
 
-  private final RedisTemplate<String, Map<String, Integer>> redisTemplate;
   private final HashOperations<String, String, Integer> hashOps;
   private final RedisAtomicLong cartIdCounter;
   private final CartRepository cartRepository;
 
   public CartService(RedisTemplate<String, Map<String, Integer>> redisTemplate, CartRepository cartRepository) {
-    this.redisTemplate = redisTemplate;
     this.cartIdCounter = new RedisAtomicLong(KeyUtils.globalCid(), redisTemplate.getConnectionFactory());
     this.hashOps = redisTemplate.opsForHash();
     this.cartRepository = cartRepository;
@@ -35,8 +34,8 @@ public class CartService {
 
   public Long createCart() {
     long cid = cartIdCounter.incrementAndGet();
-    log.info("new cart id: " + cid);
-    hashOps.put("cid:" + cid, "", 0);
+    var cart = Cart.builder().cid(KeyUtils.cid(cid)).items(new HashMap<>()).build();
+    cartRepository.save(cart);
     return cid;
   }
 
@@ -46,7 +45,7 @@ public class CartService {
   }
 
   public void addToCart(long cid, long pid, int quantity) {
-    if (!redisTemplate.hasKey(KeyUtils.cid(cid))) {
+    if (cartRepository.cartExists(KeyUtils.cid(cid))) {
       log.warn("cart with id " + cid + " not found");
       throw new CartNotFoundException(cid);
     }
