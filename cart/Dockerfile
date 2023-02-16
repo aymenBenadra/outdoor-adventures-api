@@ -2,5 +2,6 @@ FROM eclipse-temurin:17-alpine
 
 WORKDIR /app
 COPY . .
+ENV SPRING_PROFILES_ACTIVE=prod
 RUN ./gradlew build --no-daemon --exclude-task test
-CMD ["./gradlew", "bootRun"]
+CMD ["java", "-jar", "./build/libs/outdoor-shopping-cart-0.1.jar"]
