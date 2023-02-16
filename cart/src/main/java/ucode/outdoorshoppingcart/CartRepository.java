@@ -36,6 +36,11 @@ public class CartRepository {
   }
 
   public Cart save(Cart cart) {
+    if (!cart.getItems().containsKey("")) {
+      var newItems = cart.getItems();
+      newItems.put("", 0);
+      cart.setItems(newItems);
+    }
     cart.getItems().forEach((k, v) -> {
       this.hashOps.put(cart.getCid(), k, v);
     });
