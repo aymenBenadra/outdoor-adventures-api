@@ -2,12 +2,12 @@ package ucode.outdoorshoppingcart;
 
 import java.util.Map;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  * CartServiceTests
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class CartServiceTests {
 
   @Autowired
@@ -24,17 +25,10 @@ public class CartServiceTests {
   @Mock
   private CartRepository cartRepository;
   private CartService cartService;
-  private AutoCloseable autoCloseable;
 
   @BeforeEach
   void setUp() {
-    autoCloseable = MockitoAnnotations.openMocks(this);
     cartService = new CartService(redisTemplate, cartRepository);
-  }
-
-  @AfterEach
-  void tearDown() throws Exception {
-    autoCloseable.close();
   }
 
   @Test
