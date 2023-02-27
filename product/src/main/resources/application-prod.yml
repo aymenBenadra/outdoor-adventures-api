@@ -1,0 +1,5 @@
+spring:
+  es:
+    host: outdoor_product 
+    port: 9200
+
