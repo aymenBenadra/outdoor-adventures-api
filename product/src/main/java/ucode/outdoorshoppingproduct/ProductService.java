@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ucode.outdoorshoppingproduct.util.ProductNotFoundException;
 
 /**
  * ProductService
@@ -35,7 +36,21 @@ public class ProductService {
   }
 
   public Product getProduct(String id) {
-    return productRepository.findById(id).orElseThrow();
+    return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+  }
+
+  public void updateProduct(String id, ProductRequest product) {
+    productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+    var p = Product.builder()
+        .id(id).name(product.name())
+        .description(product.description())
+        .keywords(product.keywords()).build();
+    productRepository.save(p);
+  }
+
+  public void deleteProduct(String id) {
+    productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+    productRepository.deleteById(id);
   }
 
 }
