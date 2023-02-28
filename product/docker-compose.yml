@@ -12,7 +12,6 @@ services:
        ELASTIC_PASSWORD: secret
        discovery.type: single-node
        xpack.security.enabled: false
-
   app:
     build:
       context: .
