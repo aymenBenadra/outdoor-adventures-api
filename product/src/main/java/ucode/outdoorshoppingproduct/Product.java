@@ -3,6 +3,7 @@ package ucode.outdoorshoppingproduct;
 import java.time.Instant;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -19,6 +20,6 @@ public class Product {
   private @Field(type = FieldType.Text) String name;
   private @Field(type = FieldType.Text) String description;
   private @Field(type = FieldType.Integer) int price;
-  private @Field(type = FieldType.Date) Instant created_at;
   private List<String> keywords;
+  private @CreatedDate @Field(type = FieldType.Date, name = "created_at") Instant createdAt;
 }
