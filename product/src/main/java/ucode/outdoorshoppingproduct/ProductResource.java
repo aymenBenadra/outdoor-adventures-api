@@ -32,12 +32,6 @@ public class ProductResource {
     return ResponseEntity.ok(productService.createProduct(product));
   }
 
-  @PostMapping("/test")
-  public ResponseEntity<Void> logProduct(@RequestBody Product product) {
-    productService.logProduct(product);
-    return ResponseEntity.noContent().build();
-  }
-
   @GetMapping("/{id}")
   public ResponseEntity<Product> getProduct(@PathVariable("id") String id) {
     return ResponseEntity.ok(productService.getProduct(id));
