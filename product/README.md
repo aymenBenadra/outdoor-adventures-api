@@ -33,6 +33,7 @@ docker compose up -d
 ## API Endpoints
 
 The product service provides the following API endpoints:
+
 `GET /products`
 This endpoint returns a list of all products.
 
