@@ -3,6 +3,7 @@ package ucode.outdoorshoppingproduct;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductService {
 
   private final ProductESRepository productRepository;
+  private final ElasticsearchOperations elasticsearchOperations;
 
   public List<Product> getAllProducts() {
     List<Product> products = new ArrayList<>();
@@ -25,7 +27,7 @@ public class ProductService {
   }
 
   public String createProduct(Product product) {
-    return productRepository.save(product).getId();
+    return elasticsearchOperations.save(product).getId();
   }
 
   public void logProduct(Product product) {
