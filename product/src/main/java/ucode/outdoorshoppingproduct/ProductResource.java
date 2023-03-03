@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,12 @@ public class ProductResource {
   public ResponseEntity<Void> deleteProduct(@PathVariable("id") String id) {
     productService.deleteProduct(id);
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<List<Product>> searchProducts(@RequestParam(name = "q") String query) {
+    var result = productService.searchProduct(query);
+    return ResponseEntity.ok(result);
   }
 
 }

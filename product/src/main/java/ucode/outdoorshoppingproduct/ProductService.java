@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.Query;
-import org.springframework.data.elasticsearch.core.query.StringQuery;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -57,9 +57,10 @@ public class ProductService {
   }
 
   public List<Product> searchProduct(String query) {
-    Query searchQuery = new StringQuery(
-        String.format("{ \"match\": { \"name\": { \"query\": \"%s\" } } }", query));
-    SearchHits<Product> searchHits = elasticsearchOperations.search(searchQuery, Product.class);
+    if (query.isEmpty())
+      return new ArrayList<>();
+    Criteria criteria = new Criteria("name").contains(query).or("description").contains(query);
+    SearchHits<Product> searchHits = elasticsearchOperations.search(new CriteriaQuery(criteria), Product.class);
     return searchHits.map(s -> s.getContent()).toList();
   }
 
