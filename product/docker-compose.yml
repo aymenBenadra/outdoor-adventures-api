@@ -8,7 +8,6 @@ services:
       - 9200:9200
     hostname: outdoor_product
     environment:
-      ELASTIC_PASSWORD: secret
       discovery.type: single-node
       xpack.security.enabled: false
       ES_JAVA_OPTS: -Xmx500m
